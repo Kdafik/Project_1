@@ -35,10 +35,14 @@ def spending_by_category(df: DataFrame,
 
     past_date = date - timedelta(days=30*3)
 
-    logger.info("Фильтрация транзакций по категории и дате")
-    df["Дата платежа"] = to_datetime(df["Дата платежа"], format="%d.%m.%Y")
-    df = df[df["Категория"] == category]
-    filtered_transactions = df.loc[(df["Дата платежа"] >= past_date) &
-                                   (df["Дата платежа"] <= date)]
+    try:
+        logger.info("Фильтрация транзакций по категории и дате")
+        df["Дата платежа"] = to_datetime(df["Дата платежа"], format="%d.%m.%Y")
+        df = df[df["Категория"] == category]
+        filtered_transactions = df.loc[(df["Дата платежа"] >= past_date) &
+                                       (df["Дата платежа"] <= date)]
+    except KeyError as e:
+        logger.error(f"Отсутствует {e}")
+        raise KeyError(e)
 
     return filtered_transactions

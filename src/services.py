@@ -23,7 +23,15 @@ def search_description(search_line: str, df: DataFrame) -> DataFrame:
         и возвращает DataFrame с транзакциями,
         содержащими строку в описании или категории"""
 
-    logger.info("Фильтрация транзакций по строке")
-    search_list = df[(df["Категория"].str.contains(search_line, regex=True, na=False))
-                     | (df["Описание"].str.contains(search_line, regex=True, na=False))]
+    if "Категория" not in df.columns and "Описание" in df.columns:
+        search_list = df[df["Описание"].str.contains(search_line, regex=True, na=False)]
+    elif "Категория" in df.columns and "Описание" not in df.columns:
+        search_list = df[df["Категория"].str.contains(search_line, regex=True, na=False)]
+    elif "Категория" in df.columns and "Описание" in df.columns:
+        logger.info("Фильтрация транзакций по строке")
+        search_list = df[(df["Категория"].str.contains(search_line, regex=True, na=False)) |
+                         (df["Описание"].str.contains(search_line, regex=True, na=False))]
+    else:
+        raise KeyError("empty")
+
     return search_list

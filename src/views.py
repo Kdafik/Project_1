@@ -70,11 +70,15 @@ def main_page(str_date: str) -> dict:
 
     data = {}
     logger.info("Определение времени суток и запись приветственного сообщения")
-    date = datetime.strptime(str_date, "%Y-%m-%d %H:%M:%S")
+    try:
+        date = datetime.strptime(str_date, "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        logger.error(f"Некорректный формат времени: {str_date}")
+        raise ValueError
     data["greeting"] = get_hello_str(date.time().hour)
 
     try:
-        logger.info(f"Начало работы с файлом")
+        logger.info("Начало работы с файлом")
         df = get_transactions_xlsx("../data/operations.xlsx")
     except FileNotFoundError as err:
         logger.error(f"Ошибка открытия файла: {str(err)}")

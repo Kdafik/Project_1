@@ -2,9 +2,8 @@ import os
 import logging
 
 import pandas as pd
-import pandas.errors
 from pandas import DataFrame
-
+from pandas.errors import EmptyDataError
 
 dir_path = "../logs"
 if not os.path.isdir(dir_path):
@@ -27,10 +26,10 @@ def get_transactions_xlsx(path: str) -> DataFrame:
         logger.info(f"Открытие файла {path}")
         if os.path.getsize(path) == 0:
             logger.error("Файл пустой")
-            raise pandas.errors.EmptyDataError("empty")
+            raise EmptyDataError("empty")
         df = pd.read_excel(path, parse_dates=True)
         logger.info("Чтение данных из файла")
         return df
     except FileNotFoundError:
-        logger.error(f"Не найден файл {path}")
+        logger.warning(f"Не найден файл {path}")
         raise FileNotFoundError("404")

@@ -5,11 +5,9 @@ import json
 import requests
 from dotenv import load_dotenv
 
-
 dir_path = "../logs"
 if not os.path.isdir(dir_path):
     os.mkdir(path=dir_path)
-
 
 logger = logging.getLogger("external_api")
 logger.setLevel(logging.INFO)
@@ -34,7 +32,7 @@ def get_stock_prices() -> list:
     for stock in data["user_stocks"]:
         logger.info(f"Использование API для получения информации об {stock}")
         headers = {"ticker": stock,
-        "X-Api-Key": os.getenv("API_KEY_PRICE")}
+                   "X-Api-Key": os.getenv("API_KEY_PRICE")}
         api_url = "https://api.api-ninjas.com/v1/sp500"
         response = requests.get(api_url, headers).json()
         stock_prices.append({"stock": response[0]["ticker"],
